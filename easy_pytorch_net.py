@@ -126,10 +126,21 @@ test_dataset = TensorDataset(test_X, test_y)    # 测试数据集
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
 
-# 初始化模型、损失函数和优化器
+# ========== 初始化模型、损失函数和优化器 ==========
+
+# 选择计算设备：优先使用GPU（CUDA），若无则使用CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"使用设备: {device}")
+
+# 创建神经网络模型实例，并将其移动到指定设备
 model = SimpleNN().to(device)
-criterion = nn.CrossEntropyLoss()  # 交叉熵损失（用于分类任务）
+
+# 定义损失函数：交叉熵损失（适用于多分类任务）
+# CrossEntropyLoss = LogSoftmax + NLLLoss，自动处理分类概率计算
+criterion = nn.CrossEntropyLoss()
+
+# 定义优化器：Adam优化器
+# 参数：模型参数、学习率（控制参数更新步长）
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # 训练模型
